@@ -21,11 +21,10 @@ const Customizer = () => {
   const [activeEditorTab, setActiveEditorTab] = useState('');
   const [activeFilterTab, setActiveFilterTab] = useState({
     logoShirt: true,
-    stylishShirt: false
+    stylishShirt: false,
   })
 
   // tab content depending on activeTab
-
   const generateTabContent = () => {
     switch (activeEditorTab) {
       case "colorpicker":
@@ -48,30 +47,40 @@ const Customizer = () => {
 
     state[decalType.stateProperty] = result;
 
-    if(!activeFilterTab[decalType.isFilterTab]) {
+    if(!activeFilterTab[decalType.filterTab]) {
       handleActiveFilterTab(decalType.filterTab)
     }
   }
 
   const handleActiveFilterTab = (tabName) => {
     switch (tabName) {
-      case 'logoShirt':
+      case "logoShirt":
           state.isLogoTexture = !activeFilterTab[tabName];
         break;
-      case 'stylishShirt':
+      case "stylishShirt":
           state.isFullTexture = !activeFilterTab[tabName];
+        break;
       default:
         state.isLogoTexture = true;
         state.isFullTexture = false;
     }
+
+    // after setting the state, activeFilterTab is updated
+
+    setActiveFilterTab((prevState) => {
+      return {
+        ...prevState,
+        [tabName]: !prevState[tabName]
+      }
+    })
   }
 
   const readFile = (type) => {
     reader(file)
-    .then((result) =>{
-      handleDecals(type, result);
-      setActiveEditorTab('');
-    })
+      .then((result) => {
+        handleDecals(type, result);
+        setActiveEditorTab("");
+      })
   }
 
   return (
@@ -116,8 +125,8 @@ const Customizer = () => {
                     key={tab.name}
                     tab={tab}
                     isFilterTab
-                    isActiveTab=""
-                    handleClick={() => {}}
+                    isActiveTab={activeFilterTab[tab.name]}
+                    handleClick={() => handleActiveFilterTab(tab.name)}
                   />
                 ))}
           </motion.div>
